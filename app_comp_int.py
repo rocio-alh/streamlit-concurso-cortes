@@ -46,7 +46,7 @@ def simular_competidores(precio_min, precio_max, n, distribucion="Uniforme"):
 st.header("🏢 Configuración de empresas participantes")
 
 num_empresas = st.number_input(
-    "Número total de empresas participantes (incluyéndote)",
+    "Número total de empresas competidoras",
     min_value=2, max_value=20, value=3, step=1, key="num_empresas"
 )
 
