@@ -56,9 +56,9 @@ for i in range(num_empresas):
     nombre = st.text_input(f"Nombre de la empresa {i+1}", nombre_default, key=f"nombre_emp_{i}")
     empresas.append(nombre)
 
-# Añadir usuario (tú) si no está
-if "Tú" not in empresas:
-    empresas.append("Tú")
+# Añadir usuario (EMCO) si no está
+if "emco" not in empresas:
+    empresas.append("emco")
 
 # Guardar lista global en sesión (para usarla dentro de funciones)
 st.session_state["empresas"] = empresas
@@ -155,24 +155,24 @@ def simulador_lote(nombre_lote, presupuesto_base, pmax_precio, pmax_garantia, p_
 
         min_precio_sim = presupuesto_base * (1 - bajada_max / 100)
 
-        # Excluimos "Tú" para generar precios simulados solo de competidores
-        competidores = [e for e in empresas_globales if e != "Tú"]
+        # Excluimos "emco" para generar precios simulados solo de competidores
+        competidores = [e for e in empresas_globales if e != "emco"]
         num_comp = len(competidores)
 
         # Generamos precios para competidores y añadimos tu oferta
         precios_comp = simular_competidores(min_precio_sim, presupuesto_base, num_comp, distribucion)
         precios_finales = np.append(precios_comp, oferta)
 
-        # Lista completa ordenada (competidores + tú)
-        nombres_empresas = competidores + ["Tú"]
+        # Lista completa ordenada (competidores + emco)
+        nombres_empresas = competidores + ["emco"]
 
         # --- Calcular puntuaciones ---
         tabla = []
         for nombre, precio in zip(nombres_empresas, precios_finales):
             p_p = calcular_puntuacion_precio(precio, u1_precio, u2_precio, pmax_precio)
-            g = garantia if nombre == "Tú" else np.random.uniform(u1_garantia, u2_garantia + 1)
+            g = garantia if nombre == "emco" else np.random.uniform(u1_garantia, u2_garantia + 1)
             p_g = calcular_puntuacion_garantia(g, u1_garantia, u2_garantia, pmax_garantia)
-            p_t = puntos_tecnicos if nombre == "Tú" else np.random.randint(20, p_tecnico_max + 1)
+            p_t = puntos_tecnicos if nombre == "emco" else np.random.randint(20, p_tecnico_max + 1)
             total = p_p + p_g + p_t
             tabla.append({
                 "Empresa": nombre,
@@ -193,12 +193,12 @@ def simulador_lote(nombre_lote, presupuesto_base, pmax_precio, pmax_garantia, p_
         st.session_state[f"puntos_{nombre_lote}"] = df["Total"].tolist()
 
         # Tu total en el lote
-        if "Tú" in df["Empresa"].values:
-            total_usuario = df.loc[df["Empresa"] == "Tú", "Total"].values[0]
+        if "emco" in df["Empresa"].values:
+            total_usuario = df.loc[df["Empresa"] == "emco", "Total"].values[0]
             st.success(f"🎯 Tu puntuación final en {nombre_lote}: **{total_usuario} puntos**")
             st.session_state[f"total_{nombre_lote}"] = total_usuario
         else:
-            st.warning("No se encontró 'Tú' en el ranking de este lote.")
+            st.warning("No se encontró 'emco' en el ranking de este lote.")
 
 # ============================================================
 # SIMULADORES DE LOS 3 LOTES
@@ -212,7 +212,7 @@ simulador_lote("Lote 3", 90000, 45, 10, 40)
 # ============================================================
 st.header("📊 Comparador final por empresa")
 
-empresas_globales = st.session_state.get("empresas", ["Tú", "Empresa A", "Empresa B"])
+empresas_globales = st.session_state.get("empresas", ["emco", "Empresa A", "Empresa B"])
 num_empresas_cmp = len(empresas_globales)
 
 # Ajustar longitudes
