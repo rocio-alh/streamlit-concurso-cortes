@@ -30,4 +30,5 @@ streamlit run app_comp_int.py
 
 
 
-Desarrollado por Rocío Alonso- EMCO
+**Desarrollado por Rocío Alonso- EMCO**
+
